@@ -1,2 +1,7 @@
 # installation
-装机必备，initialize for a new mac
+
+装机必备
+
+Initialization for a new Mac and Develop Machine.
+
+

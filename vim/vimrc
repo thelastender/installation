@@ -1,0 +1,245 @@
+" 高亮
+syntax on
+" 查找高亮
+set hlsearch
+" 行号
+set nu
+
+" Set utf8 as standard encoding and en_US as the standard language
+set encoding=utf8
+
+" Use Unix as the standard file type
+set ffs=unix,dos,mac
+
+" 设置backspace生效
+set backspace=2
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Files, backups and undo
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Turn backup off, since most stuff is in SVN, git etc anyway...
+" 关掉备份
+set nobackup
+set nowb
+set noswapfile
+
+" 打开上次的位置
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Text, tab and indent related
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Use spaces instead of tabs
+set noexpandtab
+" Be smart when using tabs ;)
+set smarttab
+" 1 tab == 4 spaces
+set shiftwidth=4
+set tabstop=4
+set softtabstop=4
+
+" 对于Python的设置
+au BufNewFile,BufRead *.py,*.thrift
+	\ set tabstop=4 |
+	\ set softtabstop=4 |
+	\ set shiftwidth=4 |
+	\ set textwidth=79 |
+	\ set expandtab |
+	\ set autoindent |
+	\ set fileformat=unix
+
+" 对Go的设置
+au BufNewFile,BufRead *.go
+	\ set tabstop=4 |
+	\ set softtabstop=4 |
+	\ set shiftwidth=4 |
+	\ set noexpandtab | 
+	\ set smartindent |
+	\ set fileformat=unix
+
+" 对于js、css和html的设置
+au BufNewFile,BufRead *.js,*.html,*.css,*.proto
+	\ set tabstop=2 |
+	\ set softtabstop=2 |
+	\ set shiftwidth=2 |
+	\ set expandtab
+
+" 高亮光标所在行
+set cursorline
+highlight CursorLine cterm=NONE ctermbg=black ctermfg=NONE guibg=NONE guifg=NONE
+
+" 标记多余的空白字符
+highlight BadWhitespace ctermbg=1 guibg=red
+au BufNewFile,BufRead *.py,*.pyw,*.c,*.h,*.go match BadWhitespace /\s\+$/
+
+" 注释颜色设置
+highlight comment ctermfg=6
+
+
+" Line break on 500 characters
+set lbr
+set tw=500
+
+set ai "Auto indent
+set si "Smart indent
+set wrap "Wrap lines
+
+
+" 插件
+set nocompatible			  " be iMproved, required
+filetype off				  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+" tmux配置文件高亮插件
+Plugin 'tmux-plugins/vim-tmux'
+" 缩进的插件
+Plugin 'Yggdroot/indentLine'
+" thrift文件高亮插件
+Plugin 'solarnz/thrift.vim'
+" 折叠的插件
+" Plugin 'tmhedberg/SimpylFold'
+" 底部状态栏插件
+Plugin 'itchyny/lightline.vim'
+" 针对python的自动缩进
+Plugin 'vim-scripts/indentpython.vim'
+" 自动补全
+Plugin 'Valloric/YouCompleteMe'
+" 语法检查
+Plugin 'scrooloose/syntastic'
+" NERD Tree
+Plugin 'scrooloose/nerdtree'
+Plugin 'jistr/vim-nerdtree-tabs'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
+" PEP8 检查
+Plugin 'nvie/vim-flake8'
+" Vim-Go
+Plugin 'fatih/vim-go'
+" Gocode
+Plugin 'Blackrush/vim-gocode'
+" MRU
+Plugin 'mru.vim'
+" CtrlP
+Plugin 'ctrlpvim/ctrlp.vim'
+" 注释
+Plugin 'commentary.vim'
+" AutoPEP8
+Plugin 'tell-k/vim-autopep8'
+
+" All of your Plugins must be added before the following line
+call vundle#end()			 " required
+filetype plugin indent on	 " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList		- lists configured plugins
+" :PluginInstall	- installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean		- confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+
+" 插件和SimpylFold配置
+set foldmethod=indent
+set foldlevel=99
+nnoremap <space> za
+let g:SimpylFold_docstring_preview=1
+
+" Indent Line 配置
+let g:indentLine_char = '┆'
+let g:indentLine_color_term = 239
+
+" lightline配置
+set laststatus=2
+set noshowmode
+
+" YouCompleteMe的设置
+"	自动弹出语法提示
+let g:ycm_semantic_triggers =  {
+	\ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
+	\ 'cs,lua,javascript': ['re!\w{2}'],
+\ }
+let g:ycm_complete_in_comments = 1  "在注释输入中也能补全
+let g:ycm_complete_in_strings = 1   "在字符串输入中也能补全
+let g:ycm_collect_identifiers_from_comments_and_strings = 1   "注释和字符串中的文字也会被收入补全
+"	自动关闭
+let g:ycm_autoclose_preview_window_after_completion=1
+"	跳到定义或者声明
+map <c-g>  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+highlight PMenu ctermfg=056 ctermbg=255 guifg=black guibg=darkgrey
+highlight PMenuSel ctermfg=82 ctermbg=8 guifg=darkgrey guibg=black
+let g:ycm_filetype_whitelist = { 
+	\ "c":1,
+	\ "cpp":1, 
+	\ "objc":1,
+	\ "python":1,
+	\ "java":1,
+	\ "go":1,
+	\ "perl":1,
+	\ "sh":1,
+	\ "zsh":1,
+	\ "zimbu":1,
+	\ "thrift":1,
+\ }
+set completeopt=menu,menuone
+let g:ycm_add_preview_to_completeopt = 0
+let g:ycm_show_diagnostics_ui = 0
+
+
+" 支持Python VirtualEnv
+py << EOF
+import os
+import sys
+if 'VIRTUAL_ENV' in os.environ:
+	project_base_dir = os.environ['VIRTUAL_ENV']
+	activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+	execfile(activate_this, dict(__file__=activate_this))
+EOF
+
+" 语法检查syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_mode_map = {
+	\ "mode": "passive"
+\ }
+
+" Vim paste模式
+set pastetoggle=<F9>
+
+" python高亮漂亮
+let python_highlight_all=1
+
+" NERD Tree
+map <C-n> :NERDTreeToggle<CR>
+" ignore files in NERDTree
+let NERDTreeIgnore=['\.pyc$', '\~$']
+"autocmd vimenter * NERDTree
+
+" 注释
+" vim-commentary
+" 为python和shell等添加注释
+autocmd FileType python,shell,coffee set commentstring=#\ %s
+" 修改注释风格
+autocmd FileType java,c,cpp set commentstring=//\ %s
+
+" AutoPEP8 
+autocmd FileType python noremap <buffer> <F8> :call Autopep8()<CR>
+let g:autopep8_diff_type='vertical'
+
+" 拼写检查
+set spell spelllang=en,cjk
+highlight clear SpellBad
+highlight SpellBad cterm=undercurl
